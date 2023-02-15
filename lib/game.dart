@@ -19,7 +19,7 @@ class _GameState extends State<Game> {
   String message = '';
   double myPoints = 0.0;
   bool hasChosen = false;
-  List<String> _choices = ['kağıt', 'taş', 'makas'];
+  List<String> _choices = ['kagit', 'tas', 'makas'];
   Widget iPicked = Container(), compPicked = Container();
   @override
   Widget build(BuildContext context) {
@@ -45,7 +45,7 @@ class _GameState extends State<Game> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Text(
-                    'Taş\nKağıt\nMakas',
+                    'tas\nkagit\nMakas',
                     style: GoogleFonts.barlowSemiCondensed(
                       color: Colors.white,
                       fontWeight: FontWeight.w700,
@@ -63,7 +63,7 @@ class _GameState extends State<Game> {
                             style: TextStyle(fontWeight: FontWeight.w700),
                             children: <TextSpan>[
                               TextSpan(
-                                  text: 'Score\n',
+                                  text: 'Skor\n',
                                   style: GoogleFonts.barlowSemiCondensed(
                                       fontSize: 15.0,
                                       color:
@@ -88,8 +88,67 @@ class _GameState extends State<Game> {
                       children: <Widget>[
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[iPicked, compPicked],
-                        )
+                          children: <Widget>[
+                            Column(
+                              children: <Widget>[
+                                iPicked,
+                                SizedBox(
+                                  height: 10.0,
+                                ),
+                                Text(
+                                  'Seçimim',
+                                  style: GoogleFonts.barlowSemiCondensed(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 25.0,
+                                  ),
+                                )
+                              ],
+                            ),
+                            Column(
+                              children: <Widget>[
+                                compPicked,
+                                SizedBox(
+                                  height: 10.0,
+                                ),
+                                Text(
+                                  'Rakibinin seçimi',
+                                  style: GoogleFonts.barlowSemiCondensed(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 25.0),
+                                ),
+                              ],
+                            )
+                          ],
+                        ),
+                        Text(
+                          message,
+                          style: GoogleFonts.barlowSemiCondensed(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 60.0),
+                        ),
+                        SizedBox(
+                          height: 40.0,
+                        ),
+                        ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                primary: Colors.white,
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 60.0, vertical: 10.0)),
+                            onPressed: () {
+                              setState(() {
+                                hasChosen = false;
+                              });
+                            },
+                            child: Text(
+                              'Tekrar Oyna',
+                              style: GoogleFonts.barlowSemiCondensed(
+                                  color: Colors.red,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 30.0),
+                            ))
                       ],
                     )
                   : Column(
@@ -99,12 +158,8 @@ class _GameState extends State<Game> {
                           children: <Widget>[
                             InkWell(
                               onTap: () {
-                                userChoice = 'kağıt';
-                                compChoices();
-                                whoWon(userChoice, compChoice);
-                                setState(() {
-                                  myPoints;
-                                });
+                                userChoice = 'kagit';
+                                userClicking();
                               },
                               child: BigCircle(
                                   SvgPicture.asset('images/icon-paper.svg'),
@@ -115,21 +170,36 @@ class _GameState extends State<Game> {
                                   HSLColor.fromAHSL(1, 229, 0.64, 0.49)
                                       .toColor()),
                             ),
-                            BigCircle(
-                                SvgPicture.asset('images/icon-scissors.svg'),
-                                HSLColor.fromAHSL(1, 39, 0.89, 0.49).toColor(),
-                                HSLColor.fromAHSL(1, 40, 0.84, 0.53).toColor(),
-                                HSLColor.fromAHSL(1, 39, 0.64, 0.46).toColor())
+                            InkWell(
+                              onTap: () {
+                                userChoice = 'makas';
+                                userClicking();
+                              },
+                              child: BigCircle(
+                                  SvgPicture.asset('images/icon-scissors.svg'),
+                                  HSLColor.fromAHSL(1, 39, 0.89, 0.49)
+                                      .toColor(),
+                                  HSLColor.fromAHSL(1, 40, 0.84, 0.53)
+                                      .toColor(),
+                                  HSLColor.fromAHSL(1, 39, 0.64, 0.46)
+                                      .toColor()),
+                            )
                           ],
                         ),
                         SizedBox(
                           height: 30.0,
                         ),
-                        BigCircle(
-                            SvgPicture.asset('images/icon-rock.svg'),
-                            HSLColor.fromAHSL(1, 349, 0.71, 0.52).toColor(),
-                            HSLColor.fromAHSL(1, 349, 0.70, 0.56).toColor(),
-                            HSLColor.fromAHSL(1, 349, 0.64, 0.46).toColor())
+                        InkWell(
+                          onTap: () {
+                            userChoice = 'tas';
+                            userClicking();
+                          },
+                          child: BigCircle(
+                              SvgPicture.asset('images/icon-rock.svg'),
+                              HSLColor.fromAHSL(1, 349, 0.71, 0.52).toColor(),
+                              HSLColor.fromAHSL(1, 349, 0.70, 0.56).toColor(),
+                              HSLColor.fromAHSL(1, 349, 0.64, 0.46).toColor()),
+                        )
                       ],
                     ),
             )
@@ -137,6 +207,15 @@ class _GameState extends State<Game> {
         ),
       ),
     );
+  }
+
+  userClicking() {
+    compChoices();
+    whoWon(userChoice, compChoice);
+    setState(() {
+      myPoints;
+      hasChosen;
+    });
   }
 
   void compChoices() {
@@ -147,13 +226,14 @@ class _GameState extends State<Game> {
 
   void whoWon(userC, compC) {
     var rpsChoices = {
-      'taş': {'makas': 1, 'taş': 0.5, 'kağıt': 0},
-      'kağıt': {'makas': 0, 'taş': 1, 'kağıt': 0.5},
-      'makas': {'makas': 0.5, 'taş': 0, 'kağıt': 1},
+      'tas': {'makas': 1, 'tas': 0.5, 'kagit': 0},
+      'kagit': {'makas': 0, 'tas': 1, 'kagit': 0.5},
+      'makas': {'makas': 0.5, 'tas': 0, 'kagit': 1},
     };
     var myScore = rpsChoices[userC]?[compC];
     upDateScore(myScore);
     picked();
+    hasChosen = true;
   }
 
   upDateScore(myScore) {
@@ -167,7 +247,7 @@ class _GameState extends State<Game> {
   }
 
   picked() {
-    if (userChoice == 'kağıt') {
+    if (userChoice == 'kagit') {
       iPicked = BigCircle(
           SvgPicture.asset('images/icon-paper.svg'),
           HSLColor.fromAHSL(1, 230, 0.89, 0.62).toColor(),
@@ -187,13 +267,13 @@ class _GameState extends State<Game> {
           HSLColor.fromAHSL(1, 349, 0.64, 0.46).toColor());
     }
     //computer choices
-    if (userChoice == 'kağıt') {
+    if (compChoice == 'kagit') {
       compPicked = BigCircle(
           SvgPicture.asset('images/icon-paper.svg'),
           HSLColor.fromAHSL(1, 230, 0.89, 0.62).toColor(),
           HSLColor.fromAHSL(1, 230, 0.49, 0.65).toColor(),
           HSLColor.fromAHSL(1, 229, 0.64, 0.49).toColor());
-    } else if (userChoice == 'makas') {
+    } else if (compChoice == 'makas') {
       compPicked = BigCircle(
           SvgPicture.asset('images/icon-scissors.svg'),
           HSLColor.fromAHSL(1, 39, 0.89, 0.49).toColor(),
