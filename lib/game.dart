@@ -18,8 +18,9 @@ class _GameState extends State<Game> {
   String compChoice = '';
   String message = '';
   double myPoints = 0.0;
+  bool hasChosen = false;
   List<String> _choices = ['kağıt', 'taş', 'makas'];
-
+  Widget iPicked = Container(), compPicked = Container();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -69,7 +70,7 @@ class _GameState extends State<Game> {
                                           HSLColor.fromAHSL(1, 229, 0.64, 0.46)
                                               .toColor())),
                               TextSpan(
-                                  text: '12',
+                                  text: myPoints.toString(),
                                   style: GoogleFonts.barlowSemiCondensed(
                                       fontSize: 40.0,
                                       color:
@@ -82,43 +83,55 @@ class _GameState extends State<Game> {
             ),
             Container(
               padding: EdgeInsets.only(top: 30.0, left: 10.0, right: 10.0),
-              child: Column(
-                children: <Widget>[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      InkWell(
-                        onTap: () {
-                          userChoice = 'kağıt';
-                          compChoices();
-                          whoWon(userChoice, compChoice);
-                          setState(() {
-                            // myPoints
-                          });
-                        },
-                        child: BigCircle(
-                            SvgPicture.asset('images/icon-paper.svg'),
-                            HSLColor.fromAHSL(1, 230, 0.89, 0.62).toColor(),
-                            HSLColor.fromAHSL(1, 230, 0.49, 0.65).toColor(),
-                            HSLColor.fromAHSL(1, 229, 0.64, 0.49).toColor()),
-                      ),
-                      BigCircle(
-                          SvgPicture.asset('images/icon-scissors.svg'),
-                          HSLColor.fromAHSL(1, 39, 0.89, 0.49).toColor(),
-                          HSLColor.fromAHSL(1, 40, 0.84, 0.53).toColor(),
-                          HSLColor.fromAHSL(1, 39, 0.64, 0.46).toColor())
-                    ],
-                  ),
-                  SizedBox(
-                    height: 30.0,
-                  ),
-                  BigCircle(
-                      SvgPicture.asset('images/icon-rock.svg'),
-                      HSLColor.fromAHSL(1, 349, 0.71, 0.52).toColor(),
-                      HSLColor.fromAHSL(1, 349, 0.70, 0.56).toColor(),
-                      HSLColor.fromAHSL(1, 349, 0.64, 0.46).toColor())
-                ],
-              ),
+              child: hasChosen
+                  ? Column(
+                      children: <Widget>[
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[iPicked, compPicked],
+                        )
+                      ],
+                    )
+                  : Column(
+                      children: <Widget>[
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            InkWell(
+                              onTap: () {
+                                userChoice = 'kağıt';
+                                compChoices();
+                                whoWon(userChoice, compChoice);
+                                setState(() {
+                                  myPoints;
+                                });
+                              },
+                              child: BigCircle(
+                                  SvgPicture.asset('images/icon-paper.svg'),
+                                  HSLColor.fromAHSL(1, 230, 0.89, 0.62)
+                                      .toColor(),
+                                  HSLColor.fromAHSL(1, 230, 0.49, 0.65)
+                                      .toColor(),
+                                  HSLColor.fromAHSL(1, 229, 0.64, 0.49)
+                                      .toColor()),
+                            ),
+                            BigCircle(
+                                SvgPicture.asset('images/icon-scissors.svg'),
+                                HSLColor.fromAHSL(1, 39, 0.89, 0.49).toColor(),
+                                HSLColor.fromAHSL(1, 40, 0.84, 0.53).toColor(),
+                                HSLColor.fromAHSL(1, 39, 0.64, 0.46).toColor())
+                          ],
+                        ),
+                        SizedBox(
+                          height: 30.0,
+                        ),
+                        BigCircle(
+                            SvgPicture.asset('images/icon-rock.svg'),
+                            HSLColor.fromAHSL(1, 349, 0.71, 0.52).toColor(),
+                            HSLColor.fromAHSL(1, 349, 0.70, 0.56).toColor(),
+                            HSLColor.fromAHSL(1, 349, 0.64, 0.46).toColor())
+                      ],
+                    ),
             )
           ],
         ),
@@ -140,6 +153,7 @@ class _GameState extends State<Game> {
     };
     var myScore = rpsChoices[userC]?[compC];
     upDateScore(myScore);
+    picked();
   }
 
   upDateScore(myScore) {
@@ -149,6 +163,48 @@ class _GameState extends State<Game> {
       return {message = 'Berabere!', myPoints += 0.5};
     } else {
       return {message = 'Kazandın :)', myPoints += 1};
+    }
+  }
+
+  picked() {
+    if (userChoice == 'kağıt') {
+      iPicked = BigCircle(
+          SvgPicture.asset('images/icon-paper.svg'),
+          HSLColor.fromAHSL(1, 230, 0.89, 0.62).toColor(),
+          HSLColor.fromAHSL(1, 230, 0.49, 0.65).toColor(),
+          HSLColor.fromAHSL(1, 229, 0.64, 0.49).toColor());
+    } else if (userChoice == 'makas') {
+      iPicked = BigCircle(
+          SvgPicture.asset('images/icon-scissors.svg'),
+          HSLColor.fromAHSL(1, 39, 0.89, 0.49).toColor(),
+          HSLColor.fromAHSL(1, 40, 0.84, 0.53).toColor(),
+          HSLColor.fromAHSL(1, 39, 0.64, 0.46).toColor());
+    } else {
+      iPicked = BigCircle(
+          SvgPicture.asset('images/icon-rock.svg'),
+          HSLColor.fromAHSL(1, 349, 0.71, 0.52).toColor(),
+          HSLColor.fromAHSL(1, 349, 0.70, 0.56).toColor(),
+          HSLColor.fromAHSL(1, 349, 0.64, 0.46).toColor());
+    }
+    //computer choices
+    if (userChoice == 'kağıt') {
+      compPicked = BigCircle(
+          SvgPicture.asset('images/icon-paper.svg'),
+          HSLColor.fromAHSL(1, 230, 0.89, 0.62).toColor(),
+          HSLColor.fromAHSL(1, 230, 0.49, 0.65).toColor(),
+          HSLColor.fromAHSL(1, 229, 0.64, 0.49).toColor());
+    } else if (userChoice == 'makas') {
+      compPicked = BigCircle(
+          SvgPicture.asset('images/icon-scissors.svg'),
+          HSLColor.fromAHSL(1, 39, 0.89, 0.49).toColor(),
+          HSLColor.fromAHSL(1, 40, 0.84, 0.53).toColor(),
+          HSLColor.fromAHSL(1, 39, 0.64, 0.46).toColor());
+    } else {
+      compPicked = BigCircle(
+          SvgPicture.asset('images/icon-rock.svg'),
+          HSLColor.fromAHSL(1, 349, 0.71, 0.52).toColor(),
+          HSLColor.fromAHSL(1, 349, 0.70, 0.56).toColor(),
+          HSLColor.fromAHSL(1, 349, 0.64, 0.46).toColor());
     }
   }
 }
